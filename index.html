@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <script>
+      (function() {
+        try {
+          var currentFetch = typeof window !== 'undefined' && window.fetch ? window.fetch.bind(window) : null;
+          Object.defineProperty(window, 'fetch', {
+            get: function() {
+              return currentFetch;
+            },
+            set: function(fn) {
+              currentFetch = fn;
+            },
+            configurable: true,
+            enumerable: true
+          });
+        } catch (e) {
+          try {
+            if (typeof Window !== 'undefined' && Window.prototype) {
+              var protoFetch = Window.prototype.fetch;
+              Object.defineProperty(Window.prototype, 'fetch', {
+                get: function() {
+                  return protoFetch;
+                },
+                set: function(fn) {
+                  protoFetch = fn;
+                },
+                configurable: true,
+                enumerable: true
+              });
+            }
+          } catch (e2) {}
+        }
+      })();
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nexora Digital Agency — We Turn Ideas Into Digital Growth</title>
+    <meta name="description" content="Nexora Digital Agency is a leading Digital Marketing & Creative Agency in Lucknow, Uttar Pradesh. Specializing in Web Development, Performance Marketing, SEO & Creative Branding." />
+    <meta property="og:title" content="Nexora Digital Agency — We Turn Ideas Into Digital Growth" />
+    <meta property="og:description" content="Digital Marketing & Creative Agency in Gomti Nagar, Lucknow. Startups, e-commerce & growing brands." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+  </head>
+  <body class="bg-neutral-950 text-neutral-100 antialiased selection:bg-indigo-500 selection:text-white">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+
