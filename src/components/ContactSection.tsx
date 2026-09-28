@@ -334,17 +334,29 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
 
                 <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-3">
                   <a
+                    href={`mailto:ajaysaaa150@gmail.com?subject=${encodeURIComponent(
+                      `[Client Inquiry] ${fullName || 'New Lead'} - ${service}`
+                    )}&body=${encodeURIComponent(
+                      `Client: ${fullName}\nEmail: ${email}\nPhone: ${phone || 'Not provided'}\nCompany: ${company || 'Not provided'}\nService: ${service}\nBudget: ${budget}\n\nProject Details:\n${message}`
+                    )}`}
+                    className="w-full sm:w-auto px-5 py-2.5 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-500 rounded-lg transition-colors flex items-center justify-center gap-1.5 shadow-sm shadow-indigo-600/30"
+                  >
+                    <Mail className="w-3.5 h-3.5" />
+                    <span>Send Direct to Email</span>
+                  </a>
+
+                  <a
                     href={`https://wa.me/919123456789?text=Hi%20Nexora,%20I%20just%20submitted%20an%20inquiry%20from%20${encodeURIComponent(fullName || 'your website')}.`}
                     target="_blank"
                     rel="noreferrer"
-                    className="w-full sm:w-auto px-6 py-2.5 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-500 rounded-lg transition-colors flex items-center justify-center gap-1.5 shadow-sm shadow-indigo-600/30"
+                    className="w-full sm:w-auto px-5 py-2.5 text-xs font-semibold text-emerald-300 hover:text-emerald-200 bg-emerald-950/60 hover:bg-emerald-900/60 border border-emerald-800/60 rounded-lg transition-colors flex items-center justify-center gap-1.5"
                   >
-                    <span>Fast-Track via WhatsApp</span>
+                    <span>Fast-Track WhatsApp</span>
                   </a>
 
                   <button
                     onClick={handleResetForm}
-                    className="w-full sm:w-auto px-6 py-2.5 text-xs font-semibold text-neutral-300 hover:text-white bg-neutral-800 hover:bg-neutral-700 rounded-lg transition-colors"
+                    className="w-full sm:w-auto px-5 py-2.5 text-xs font-semibold text-neutral-300 hover:text-white bg-neutral-800 hover:bg-neutral-700 rounded-lg transition-colors"
                   >
                     Submit Another Inquiry
                   </button>

@@ -97,17 +97,25 @@ app.post('/api/inquiries', async (req, res) => {
     let deliveryStatus: 'sent_smtp' | 'queued_server' | 'simulated' = 'simulated';
     let deliveryNote = `Inquiry recorded and routed to ${destinationEmail}`;
 
-    // If SMTP is configured, attempt real SMTP transmission
-    if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
+    // If SMTP password is configured, attempt real SMTP transmission
+    const smtpPass = process.env.SMTP_PASS || process.env.GMAIL_APP_PASSWORD;
+    const smtpUser = process.env.SMTP_USER || process.env.GMAIL_USER || 'ajaysaaa150@gmail.com';
+    const smtpHost = process.env.SMTP_HOST || 'smtp.gmail.com';
+    const smtpPort = parseInt(process.env.SMTP_PORT || '465', 10);
+
+    if (smtpPass) {
       try {
         const transporter = nodemailer.createTransport({
-          host: process.env.SMTP_HOST,
-          port: parseInt(process.env.SMTP_PORT || '587', 10),
-          secure: process.env.SMTP_PORT === '465',
+          host: smtpHost,
+          port: smtpPort,
+          secure: smtpPort === 465,
           auth: {
-            user: process.env.SMTP_USER,
-            pass: process.env.SMTP_PASS,
+            user: smtpUser,
+            pass: smtpPass,
           },
+          tls: {
+            rejectUnauthorized: false
+          }
         });
 
         const mailSubject = `[Nexora New Lead] ${fullName} - ${service}`;
