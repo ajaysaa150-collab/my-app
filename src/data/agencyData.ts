@@ -62,7 +62,7 @@ export const AGENCY_DETAILS = {
   phone: '+91 91234 56789',
   phoneRaw: '+919123456789',
   email: 'hello@nexoradigital.in',
-  targetNotificationEmail: 'ajaysaa508@gmail.com',
+  targetNotificationEmail: 'ajaysaaa150@gmail.com',
   businessHours: 'Mon - Sat: 10:00 AM - 7:00 PM IST',
   aboutBrief: 'Nexora Digital Agency startups, local businesses aur growing brands ke liye digital solutions provide karti hai. Agency ka focus web design, performance marketing aur creative branding par hai.',
   aboutDetailed: 'Founded in 2021 in Lucknow, Nexora Digital Agency bridges creative ambition with measurable performance. We engineer blazing-fast websites, execute high-ROI performance ad campaigns, and carve distinct visual brand identities that turn visitors into lifelong brand advocates.',

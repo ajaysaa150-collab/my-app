@@ -12,7 +12,7 @@ import {
   Send,
   Lock
 } from 'lucide-react';
-import { Inquiry } from '../data/agencyData';
+import { Inquiry, AGENCY_DETAILS } from '../data/agencyData';
 
 interface InquiryViewerModalProps {
   isOpen: boolean;
@@ -29,7 +29,7 @@ export const InquiryViewerModal: React.FC<InquiryViewerModalProps> = ({
   onClearAll,
   onDeleteInquiry,
 }) => {
-  const globalEmail = localStorage.getItem('nexora_target_email') || 'ajaysaa508@gmail.com';
+  const globalEmail = localStorage.getItem('nexora_target_email') || AGENCY_DETAILS.targetNotificationEmail || 'ajaysaaa150@gmail.com';
 
   if (!isOpen) return null;
 

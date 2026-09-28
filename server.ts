@@ -53,7 +53,7 @@ app.use(express.json());
 
 // API: Get current email forwarding configuration
 app.get('/api/config', (_req, res) => {
-  const targetEmail = process.env.TARGET_NOTIFICATION_EMAIL || 'ajaysaa508@gmail.com';
+  const targetEmail = process.env.TARGET_NOTIFICATION_EMAIL || 'ajaysaaa150@gmail.com';
   const smtpConfigured = Boolean(process.env.SMTP_HOST && process.env.SMTP_USER);
 
   res.json({
@@ -92,7 +92,7 @@ app.post('/api/inquiries', async (req, res) => {
     }
 
     // Strictly server-enforced target recipient email (cannot be modified by visitors)
-    const destinationEmail = process.env.TARGET_NOTIFICATION_EMAIL || 'ajaysaa508@gmail.com';
+    const destinationEmail = process.env.TARGET_NOTIFICATION_EMAIL || 'ajaysaaa150@gmail.com';
 
     let deliveryStatus: 'sent_smtp' | 'queued_server' | 'simulated' = 'simulated';
     let deliveryNote = `Inquiry recorded and routed to ${destinationEmail}`;

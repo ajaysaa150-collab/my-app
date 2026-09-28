@@ -29,7 +29,7 @@ export default async function handler(req: any, res: any) {
       });
     }
 
-    const destinationEmail = process.env.TARGET_NOTIFICATION_EMAIL || 'ajaysaa508@gmail.com';
+    const destinationEmail = process.env.TARGET_NOTIFICATION_EMAIL || 'ajaysaaa150@gmail.com';
 
     // Send email if SMTP is configured on Vercel environment variables
     if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
