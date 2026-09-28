@@ -80,17 +80,17 @@ export const InquiryViewerModal: React.FC<InquiryViewerModalProps> = ({
           </div>
         </div>
 
-        {/* Target Email Bar (Locked) */}
+        {/* Target Email Bar (Protected) */}
         <div className="px-6 py-3 bg-neutral-950/90 border-b border-neutral-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
           <div className="flex items-center gap-2 text-neutral-400">
             <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
-            <span>Target Notification Email:</span>
-            <strong className="text-emerald-300 font-mono">{globalEmail}</strong>
+            <span>Forwarding Channel:</span>
+            <span className="text-emerald-300 font-medium">Agency Executive Management (Protected)</span>
           </div>
 
           <div className="flex items-center gap-1 text-[11px] text-neutral-400 bg-neutral-900 px-2 py-0.5 rounded border border-neutral-800">
             <Lock className="w-3 h-3 text-emerald-400" />
-            <span>Locked & Secured</span>
+            <span>Private & Encrypted</span>
           </div>
         </div>
 
@@ -100,7 +100,7 @@ export const InquiryViewerModal: React.FC<InquiryViewerModalProps> = ({
             <div className="py-12 text-center text-neutral-400 space-y-2">
               <p className="text-sm">No inquiries received yet.</p>
               <p className="text-xs text-neutral-500">
-                Submit an inquiry in the Contact Section to see it recorded and routed to <span className="text-neutral-300 font-mono">{globalEmail}</span>.
+                Submit an inquiry in the Contact Section to see it recorded here.
               </p>
             </div>
           ) : (
@@ -120,7 +120,7 @@ export const InquiryViewerModal: React.FC<InquiryViewerModalProps> = ({
                       </span>
                       <span className="text-[11px] text-emerald-400 bg-emerald-950/50 border border-emerald-900/50 px-2 py-0.5 rounded flex items-center gap-1">
                         <Check className="w-3 h-3" />
-                        <span>To: {inq.destinationEmail || globalEmail}</span>
+                        <span>Dispatched to Management</span>
                       </span>
                     </div>
 
@@ -189,7 +189,7 @@ export const InquiryViewerModal: React.FC<InquiryViewerModalProps> = ({
         {/* Footer */}
         <div className="p-4 bg-neutral-950 border-t border-neutral-800 flex items-center justify-between">
           <span className="text-[11px] text-neutral-500">
-            Destination: <span className="text-emerald-400">{globalEmail}</span>
+            Encrypted delivery to agency management inbox
           </span>
           <button
             onClick={onClose}

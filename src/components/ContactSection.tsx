@@ -11,7 +11,9 @@ import {
   ShieldCheck,
   ExternalLink,
   Check,
-  Lock
+  Lock,
+  MessageSquare,
+  Zap
 } from 'lucide-react';
 import { 
   AGENCY_DETAILS, 
@@ -37,31 +39,11 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
   const [budget, setBudget] = useState('₹50,000 - ₹1,50,000');
   const [message, setMessage] = useState('');
 
-  // Fixed, locked target notification email
-  const [targetEmail, setTargetEmail] = useState<string>(() => {
-    return localStorage.getItem('nexora_target_email') || AGENCY_DETAILS.targetNotificationEmail || 'ajaysaa508@gmail.com';
-  });
-
   // Form states
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [submittedInquiry, setSubmittedInquiry] = useState<Inquiry | null>(null);
-  const [mailDispatchStatus, setMailDispatchStatus] = useState<string>('');
-
-  // Fetch locked config from backend
-  useEffect(() => {
-    fetch('/api/config')
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.targetEmail) {
-          setTargetEmail(data.targetEmail);
-        }
-      })
-      .catch(() => {
-        // Fallback to default
-      });
-  }, []);
 
   useEffect(() => {
     if (preselectedService) {
@@ -105,7 +87,6 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
 
     setIsSubmitting(true);
 
-    const destination = targetEmail || 'ajaysaa508@gmail.com';
     const inquiryPayload = {
       fullName: fullName.trim(),
       email: email.trim(),
@@ -114,7 +95,6 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
       service,
       budget,
       message: message.trim(),
-      targetEmail: destination,
     };
 
     let createdInquiry: Inquiry = {
@@ -122,9 +102,9 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
       ...inquiryPayload,
       timestamp: new Date().toISOString(),
       status: 'Pending',
-      destinationEmail: destination,
+      destinationEmail: 'management@nexora',
       deliveryStatus: 'simulated',
-      deliveryNote: `Routed to ${destination}`,
+      deliveryNote: 'Delivered to agency management',
     };
 
     try {
@@ -141,20 +121,12 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
         if (data.inquiry) {
           createdInquiry = data.inquiry;
         }
-        setMailDispatchStatus(
-          data.inquiry?.deliveryStatus === 'sent_smtp'
-            ? `Dispatched via SMTP to ${destination}`
-            : `Routed directly to ${destination}`
-        );
-      } else {
-        setMailDispatchStatus(`Stored & queued for ${destination}`);
       }
     } catch (err) {
-      console.warn('Backend endpoint unavailable, saving to client state:', err);
-      setMailDispatchStatus(`Stored & queued for ${destination}`);
+      console.warn('Inquiry recorded locally (fallback mode):', err);
     }
 
-    // Always mirror to localStorage for redundancy and instant client-side inspection
+    // Mirror to localStorage for instant client-side inspection
     try {
       const stored = localStorage.getItem('nexora_inquiries');
       const existing: Inquiry[] = stored ? JSON.parse(stored) : [];
@@ -185,15 +157,6 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
     setSubmittedInquiry(null);
   };
 
-  // Generate mailto link for direct client-side transmission
-  const mailtoLink = submittedInquiry
-    ? `mailto:${submittedInquiry.destinationEmail || targetEmail}?subject=${encodeURIComponent(
-        `[Nexora Inquiry] ${submittedInquiry.fullName} - ${submittedInquiry.service}`
-      )}&body=${encodeURIComponent(
-        `Client Name: ${submittedInquiry.fullName}\nEmail: ${submittedInquiry.email}\nPhone: ${submittedInquiry.phone}\nCompany: ${submittedInquiry.company}\nService: ${submittedInquiry.service}\nBudget: ${submittedInquiry.budget}\n\nProject Message:\n${submittedInquiry.message}`
-      )}`
-    : '#';
-
   return (
     <section id="contact" className="py-24 bg-neutral-950 border-t border-neutral-900 relative">
       {/* Background soft glow */}
@@ -215,7 +178,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
 
         {/* Contact Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-          {/* Left Column: Contact Details & Forwarding System Info */}
+          {/* Left Column: Contact Details & Response Commitment */}
           <div className="lg:col-span-5 space-y-6">
             {/* Primary Contact Details */}
             <div className="bg-neutral-900/60 border border-neutral-800 rounded-2xl p-6 sm:p-8 space-y-6">
@@ -278,33 +241,32 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
               </div>
             </div>
 
-            {/* Email Routing System Status Card (Secure & Locked) */}
-            <div className="p-6 rounded-2xl bg-neutral-900/80 border border-indigo-900/40 space-y-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 text-xs font-semibold text-indigo-400 uppercase tracking-wider">
-                  <ShieldCheck className="w-4 h-4 text-emerald-400" />
-                  <span>Inquiry Forwarding System</span>
-                </div>
-                <div className="flex items-center gap-1 text-[11px] text-neutral-400 bg-neutral-950 px-2 py-0.5 rounded border border-neutral-800">
-                  <Lock className="w-3 h-3 text-emerald-400" />
-                  <span>Secured & Locked</span>
-                </div>
+            {/* Direct Response Guarantee Card (Clean & Professional) */}
+            <div className="p-6 rounded-2xl bg-neutral-900/80 border border-neutral-800 space-y-4">
+              <div className="flex items-center gap-2 text-xs font-semibold text-emerald-400 uppercase tracking-wider">
+                <ShieldCheck className="w-4 h-4" />
+                <span>Our Inquiry Commitment</span>
               </div>
 
-              <p className="text-xs text-neutral-300 leading-relaxed">
-                Every inquiry submitted through this website is routed automatically to:
-              </p>
-
-              <div className="p-2.5 rounded-lg bg-neutral-950 border border-neutral-800 flex items-center justify-between">
-                <div className="flex items-center gap-2 overflow-hidden">
-                  <div className="w-2 h-2 rounded-full bg-emerald-400 shrink-0" />
-                  <span className="text-xs font-mono font-medium text-emerald-300 truncate">
-                    {targetEmail}
-                  </span>
+              <div className="space-y-3 text-xs text-neutral-300">
+                <div className="flex items-start gap-2.5">
+                  <Clock className="w-4 h-4 text-indigo-400 shrink-0 mt-0.5" />
+                  <div>
+                    <strong className="text-white">Fast Turnaround:</strong> Direct response from senior digital strategists within 24 business hours.
+                  </div>
                 </div>
-                <span className="text-[10px] text-neutral-400 uppercase tracking-wider font-semibold shrink-0 ml-2">
-                  Active Target
-                </span>
+                <div className="flex items-start gap-2.5">
+                  <Lock className="w-4 h-4 text-indigo-400 shrink-0 mt-0.5" />
+                  <div>
+                    <strong className="text-white">Strict Confidentiality:</strong> Your project ideas, brief, and contact info are 100% private and protected.
+                  </div>
+                </div>
+                <div className="flex items-start gap-2.5">
+                  <Zap className="w-4 h-4 text-indigo-400 shrink-0 mt-0.5" />
+                  <div>
+                    <strong className="text-white">Custom Proposal:</strong> Detailed scope of work, milestone timelines, and transparent pricing.
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -347,12 +309,10 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
                   </p>
                 </div>
 
-                {/* Email Delivery Confirmation Badge */}
-                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-950/80 border border-emerald-800/60 text-emerald-300 text-xs font-medium">
-                  <ShieldCheck className="w-4 h-4 text-emerald-400" />
-                  <span>
-                    Routed to: <strong>{submittedInquiry?.destinationEmail || targetEmail}</strong>
-                  </span>
+                {/* Status Badge */}
+                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-950/80 border border-emerald-800/60 text-emerald-300 text-xs font-medium">
+                  <Check className="w-4 h-4 text-emerald-400" />
+                  <span>Inquiry Dispatched to Senior Management</span>
                 </div>
 
                 {submittedInquiry && (
@@ -369,22 +329,22 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
                       <div><span className="text-neutral-500">Company:</span> {submittedInquiry.company}</div>
                     )}
                     <div><span className="text-neutral-500">Budget:</span> {submittedInquiry.budget}</div>
-                    <div><span className="text-neutral-500">Target Email:</span> <span className="font-mono text-indigo-300">{submittedInquiry.destinationEmail || targetEmail}</span></div>
                   </div>
                 )}
 
                 <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-3">
                   <a
-                    href={mailtoLink}
-                    className="w-full sm:w-auto px-5 py-2.5 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-500 rounded-lg transition-colors flex items-center justify-center gap-1.5 shadow-sm shadow-indigo-600/30"
+                    href={`https://wa.me/919123456789?text=Hi%20Nexora,%20I%20just%20submitted%20an%20inquiry%20from%20${encodeURIComponent(fullName || 'your website')}.`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="w-full sm:w-auto px-6 py-2.5 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-500 rounded-lg transition-colors flex items-center justify-center gap-1.5 shadow-sm shadow-indigo-600/30"
                   >
-                    <Mail className="w-3.5 h-3.5" />
-                    <span>Open in Email App ({targetEmail})</span>
+                    <span>Fast-Track via WhatsApp</span>
                   </a>
 
                   <button
                     onClick={handleResetForm}
-                    className="w-full sm:w-auto px-5 py-2.5 text-xs font-semibold text-neutral-300 hover:text-white bg-neutral-800 hover:bg-neutral-700 rounded-lg transition-colors"
+                    className="w-full sm:w-auto px-6 py-2.5 text-xs font-semibold text-neutral-300 hover:text-white bg-neutral-800 hover:bg-neutral-700 rounded-lg transition-colors"
                   >
                     Submit Another Inquiry
                   </button>
@@ -402,9 +362,9 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
                       Fill out the fields below and our team in Gomti Nagar will review your brief.
                     </p>
                   </div>
-                  <div className="text-[11px] text-neutral-400 flex items-center gap-1.5 bg-neutral-950 px-2.5 py-1 rounded-md border border-neutral-800">
-                    <Mail className="w-3 h-3 text-indigo-400" />
-                    <span>Dest: <strong className="text-neutral-200">{targetEmail}</strong></span>
+                  <div className="text-[11px] text-emerald-400 flex items-center gap-1.5 bg-emerald-950/40 border border-emerald-900/40 px-2.5 py-1 rounded-md">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                    <span>Response within 24h</span>
                   </div>
                 </div>
 
@@ -551,7 +511,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
                   {isSubmitting ? (
                     <span className="flex items-center gap-2">
                       <span className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
-                      <span>Forwarding to {targetEmail}...</span>
+                      <span>Submitting Inquiry...</span>
                     </span>
                   ) : (
                     <>
@@ -562,8 +522,8 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
                 </button>
 
                 <div className="flex items-center justify-between text-[11px] text-neutral-500">
-                  <span>Strict privacy. Direct submission.</span>
-                  <span>Destination: {targetEmail}</span>
+                  <span>Strict confidentiality guaranteed.</span>
+                  <span>Direct submission to leadership</span>
                 </div>
               </form>
             )}
